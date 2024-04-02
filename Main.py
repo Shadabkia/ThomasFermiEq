@@ -23,17 +23,8 @@ mlp = nn.Sequential(
     nn.Linear(40, 1),
 )
 
-optimizer = optim.SGD(list(mlp.parameters()), lr=0.01, momentum=0.9)
+optimizer = optim.SGD(list(mlp.parameters()), lr=0.001, momentum=0.9)
 criterion = nn.MSELoss()
-
-
-# def dx_dy(y, x):
-#     return torch.autograd.grad(y, x, grad_outputs=torch.ones_like(x), create_graph=True)[0]
-#
-#
-# def d2x_dy2(y, x):
-#     return torch.autograd.grad(dx_dy(y, x), x, grad_outputs=torch.ones_like(x), create_graph=True)[0]
-
 
 def dx_dy(y, x):
     return torch.autograd.grad(y, x, grad_outputs=torch.ones_like(y), create_graph=True)[0]
@@ -44,10 +35,9 @@ def d2x_dy2(y, x):
     dy_dx = dx_dy(y, x)
     return torch.autograd.grad(dy_dx, x, grad_outputs=torch.ones_like(dy_dx), create_graph=True)[0]
 
-
 losses = []
 
-for i in range(1500):
+for i in range(15000):
     y = mlp.forward(x)
     y_p = dx_dy(y, x)
     y_pp = d2x_dy2(y, x)
