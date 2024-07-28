@@ -1,8 +1,26 @@
+import random
 import torch
 from torch import nn
 from torch import optim
 import matplotlib.pyplot as plt
 import numpy as np
+
+
+def set_seed(seed_value):
+    random.seed(seed_value)
+    np.random.seed(seed_value)
+    torch.manual_seed(seed_value)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed(seed_value)
+        torch.cuda.manual_seed_all(seed_value)  # if you are using multi-GPU.
+
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+    torch.use_deterministic_algorithms(True)
+
+
+seed_value = 123
+set_seed(seed_value)
 
 # define the range of x values
 x_min = 0.01  # avoid zero division
@@ -14,16 +32,14 @@ print(x.shape)
 
 # define mlp with nn and tanh function and three layer
 mlp = nn.Sequential(
-    nn.Linear(1, 40),
+    nn.Linear(1, 30),
     nn.Tanh(),
-    nn.Linear(40, 30),
+    nn.Linear(30, 30),
     nn.Tanh(),
-    nn.Linear(30, 40),
-    nn.Tanh(),
-    nn.Linear(40, 1),
+    nn.Linear(30, 1),
 )
 
-optimizer = optim.SGD(list(mlp.parameters()), lr=0.001, momentum=0.9)
+optimizer = optim.SGD(list(mlp.parameters()), lr=0.0001, momentum=0.9)
 criterion = nn.MSELoss()
 
 def dx_dy(y, x):
@@ -37,7 +53,7 @@ def d2x_dy2(y, x):
 
 losses = []
 
-for i in range(15000):
+for i in range(168000):
     y = mlp.forward(x)
     y_p = dx_dy(y, x)
     y_pp = d2x_dy2(y, x)
@@ -81,3 +97,7 @@ for ax in axs:
     ax.grid()
 
 plt.show()
+
+temp1 = torch.tensor([0.25], dtype=torch.float, requires_grad=True)
+output = mlp(temp1)
+print(output)
