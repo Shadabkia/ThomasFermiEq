@@ -5,7 +5,6 @@ from torch import optim
 import matplotlib.pyplot as plt
 import numpy as np
 
-
 def set_seed(seed_value):
     random.seed(seed_value)
     np.random.seed(seed_value)
@@ -58,7 +57,7 @@ def d2x_dy2(y, x):
 
 losses = []
 
-for i in range(120000):
+for i in range(122000):
     y = mlp.forward(x)
     y_p = dx_dy(y, x)
     y_pp = d2x_dy2(y, x)
